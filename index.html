@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#7a9f59" />
+  <meta name="description" content="Planificador saludable de menús diaris i setmanals per a menors." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Menú Verd" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>Menú Verd · Planificador saludable</title>
   <style>
     :root{
@@ -917,19 +923,9 @@ function capitalize(s){
 
 function registerSW(){
   if(!("serviceWorker" in navigator)) return;
-  const sw = `
-    const CACHE = "menu-verd-v1";
-    self.addEventListener("install", e => {
-      e.waitUntil(caches.open(CACHE).then(c => c.addAll(["./"])));
-      self.skipWaiting();
-    });
-    self.addEventListener("fetch", e => {
-      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-    });
-  `;
-  const blob = new Blob([sw], {type:"text/javascript"});
-  const url = URL.createObjectURL(blob);
-  navigator.serviceWorker.register(url).catch(()=>{});
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
 }
 
 init();
