@@ -35,3 +35,11 @@ Puja tots els fitxers a l'arrel del repositori i activa GitHub Pages a `Settings
 iPhone: obre la web amb Safari i fes `Compartir > Afegir a la pantalla d'inici`.
 Android: obre la web amb Chrome i tria `Instal·la l'aplicació` o `Afegeix a la pantalla d'inici`.
 Si veus una versió antiga, prem `Actualitza app` dins la PWA.
+
+
+## Correcció v4.1
+
+- Els entrants ja no poden aparèixer com a plat principal.
+- El gaspatxo queda limitat a entrant de dinar.
+- El generador evita que entrant i plat principal siguin la mateixa recepta.
+- En mode estiu, el patró setmanal ja no pot triar "entrant" com a categoria de plat principal.
