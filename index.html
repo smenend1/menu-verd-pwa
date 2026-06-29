@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#7a9f59" />
+  <title>Menú Verd · Planificador saludable</title>
+  <style>
+    :root{
+      --verd:#7a9f59;
+      --verd-fosc:#466536;
+      --verd-clar:#eaf3df;
+      --crema:#fff8ec;
+      --taronja:#f3b36b;
+      --taronja-clar:#fff1df;
+      --text:#263322;
+      --muted:#65715f;
+      --card:#ffffff;
+      --border:#dde7d2;
+      --danger:#b94a48;
+      --ok:#3f7d45;
+      --warn:#a86f18;
+      --shadow:0 12px 30px rgba(49,74,37,.12);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:linear-gradient(145deg,var(--crema),#f5fbef 42%,#fff);
+      color:var(--text);
+      line-height:1.45;
+    }
+
+    header{
+      padding:28px 18px 20px;
+      background:
+        radial-gradient(circle at 8% 10%,rgba(243,179,107,.35),transparent 26%),
+        radial-gradient(circle at 92% 6%,rgba(122,159,89,.25),transparent 26%),
+        linear-gradient(135deg,#fdf5e7,#eef8e5);
+      border-bottom:1px solid var(--border);
+    }
+
+    .wrap{max-width:1180px;margin:0 auto;padding:0 16px 36px}
+    .hero{
+      max-width:1180px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:20px;
+      align-items:center;
+    }
+    h1{font-size:clamp(2rem,4vw,4rem);margin:0 0 8px;color:var(--verd-fosc);letter-spacing:-.04em}
+    .subtitle{font-size:clamp(1rem,2vw,1.35rem);margin:0;color:var(--muted)}
+    .hero-card{
+      background:rgba(255,255,255,.72);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .hero-card strong{color:var(--verd-fosc)}
+    .emoji-row{font-size:2rem;margin-top:12px;letter-spacing:.15em}
+
+    main{padding-top:22px}
+    .grid{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start}
+    .panel,.card{
+      background:rgba(255,255,255,.88);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .panel{position:sticky;top:14px}
+    h2{margin:0 0 12px;font-size:1.35rem;color:var(--verd-fosc)}
+    h3{margin:18px 0 8px;font-size:1rem;color:var(--verd-fosc)}
+    p{margin:8px 0}
+    .small{font-size:.9rem;color:var(--muted)}
+    .notice{
+      border-left:5px solid var(--taronja);
+      background:var(--taronja-clar);
+      border-radius:16px;
+      padding:12px 14px;
+      color:#594027;
+      margin-bottom:14px;
+    }
+    .danger{
+      border-left-color:var(--danger);
+      background:#fff0ee;
+      color:#6c2d2a;
+    }
+
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:#fff;
+      cursor:pointer;
+      user-select:none;
+      font-size:.92rem;
+    }
+    .chip input{accent-color:var(--verd)}
+    label{font-weight:600;color:var(--verd-fosc);font-size:.93rem}
+    select,input[type=text],textarea{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:11px 12px;
+      background:#fff;
+      color:var(--text);
+      font:inherit;
+      outline:none;
+    }
+    textarea{min-height:82px;resize:vertical}
+    .field{margin:10px 0}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+    button{
+      border:none;
+      border-radius:999px;
+      padding:11px 15px;
+      background:var(--verd);
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 6px 14px rgba(70,101,54,.16);
+      transition:.15s ease;
+    }
+    button:hover{transform:translateY(-1px);background:var(--verd-fosc)}
+    button.secondary{background:#fff;color:var(--verd-fosc);border:1px solid var(--border)}
+    button.warn{background:var(--taronja);color:#4a3219}
+    button.danger{background:var(--danger);color:#fff;border:0}
+
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+    .tab{
+      background:#fff;
+      color:var(--verd-fosc);
+      border:1px solid var(--border);
+    }
+    .tab.active{background:var(--verd);color:#fff}
+
+    .section{display:none}
+    .section.active{display:block}
+
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    th{text-align:left;color:var(--verd-fosc);font-size:.9rem;padding:0 10px}
+    td{
+      background:#fff;
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+      padding:12px 10px;
+      vertical-align:top;
+    }
+    td:first-child{border-left:1px solid var(--border);border-radius:16px 0 0 16px;font-weight:800;color:var(--verd-fosc);min-width:100px}
+    td:last-child{border-right:1px solid var(--border);border-radius:0 16px 16px 0}
+    .meal-title{font-weight:800;color:var(--verd-fosc);margin-bottom:5px}
+    .meal-meta{font-size:.86rem;color:var(--muted);margin-top:4px}
+    .editable{
+      min-height:52px;
+      outline:2px dashed transparent;
+      border-radius:10px;
+      padding:2px;
+    }
+    .editable:focus{outline-color:var(--taronja);background:#fff9ed}
+
+    .score-box{
+      display:grid;
+      grid-template-columns:160px 1fr;
+      gap:16px;
+      align-items:center;
+    }
+    .score{
+      width:136px;height:136px;border-radius:50%;
+      display:grid;place-items:center;
+      background:conic-gradient(var(--verd) calc(var(--score,0)*1%), #edf2e7 0);
+      margin:auto;
+      position:relative;
+    }
+    .score::after{
+      content:"";
+      position:absolute;
+      width:104px;height:104px;border-radius:50%;
+      background:#fff;
+    }
+    .score span{position:relative;z-index:1;font-size:2rem;font-weight:900;color:var(--verd-fosc)}
+    .badges{display:flex;flex-wrap:wrap;gap:8px}
+    .badge{
+      padding:7px 10px;
+      border-radius:999px;
+      background:var(--verd-clar);
+      color:var(--verd-fosc);
+      font-weight:700;
+      font-size:.86rem;
+    }
+    .badge.warn{background:#fff0d6;color:var(--warn)}
+    .badge.bad{background:#ffe2df;color:var(--danger)}
+
+    .recipe-list{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:12px;
+    }
+    .recipe{
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:13px;
+      background:#fff;
+    }
+    .recipe b{color:var(--verd-fosc)}
+    .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+    .tag{font-size:.76rem;background:var(--verd-clar);color:var(--verd-fosc);border-radius:999px;padding:4px 7px}
+
+    .daily-output{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+    .toast{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      background:var(--verd-fosc);
+      color:white;
+      border-radius:16px;
+      padding:12px 15px;
+      box-shadow:var(--shadow);
+      transform:translateY(120%);
+      opacity:0;
+      transition:.25s ease;
+      z-index:9;
+    }
+    .toast.show{transform:translateY(0);opacity:1}
+
+    @media(max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
+      .panel{position:static}
+      .daily-output{grid-template-columns:1fr}
+      table,thead,tbody,tr,td{display:block;width:100%}
+      thead{display:none}
+      tr{margin-bottom:14px}
+      td{border-left:1px solid var(--border);border-right:1px solid var(--border);border-radius:0;padding:11px 12px}
+      td:first-child{border-radius:18px 18px 0 0}
+      td:last-child{border-radius:0 0 18px 18px}
+      td::before{content:attr(data-label);display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:800;margin-bottom:4px}
+      .score-box{grid-template-columns:1fr}
+    }
+
+    @media print{
+      body{background:#fff;color:#111}
+      header,.panel,.tabs,.actions,.no-print,#recipeForm,.toast{display:none!important}
+      .wrap{max-width:none;padding:0}
+      .section{display:block!important}
+      .section:not(#setmanal):not(#revisio){display:none!important}
+      .card{box-shadow:none;border:0;padding:0}
+      td{break-inside:avoid}
+      .editable{outline:0}
+      h2::after{content:" · " attr(data-print);}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <div>
+        <h1>Menú Verd</h1>
+        <p class="subtitle">Planificador saludable de cremes, amanides, fruites, llegums i plats senzills per a menors</p>
+        <div class="emoji-row" aria-hidden="true">🥦 🍅 🍐 🥣 🥗 🫘 🐟 🍗</div>
+      </div>
+      <div class="hero-card">
+        <strong>Objectiu:</strong> crear menús de dinar i sopar equilibrats, realistes i fàcils d’adaptar.
+        <p class="small">Base vegetal amb fruita, verdures i llegums, més peix, carn senzilla, hummus, guacamole i opcions ocasionals.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="notice">
+      Aquesta eina ofereix idees orientatives de menús saludables. No substitueix el consell d’un professional de la salut o de la nutrició, especialment en casos d’al·lèrgies, intoleràncies, patologies o necessitats dietètiques específiques.
+    </div>
+
+    <div class="grid">
+      <aside class="panel no-print">
+        <h2>Configuració</h2>
+
+        <div class="field">
+          <label for="edat">Edat aproximada</label>
+          <select id="edat">
+            <option value="3-6">3-6 anys</option>
+            <option value="7-11" selected>7-11 anys</option>
+            <option value="12-16">12-16 anys</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="tipusMenu">Tipus de menú</label>
+          <select id="tipusMenu">
+            <option value="equilibrat">Equilibrat estàndard</option>
+            <option value="vegetal">Molt vegetal</option>
+            <option value="llegums">Amb més llegums</option>
+            <option value="suau">Suau per a infants petits</option>
+            <option value="estiu">Més fresc per a l’estiu</option>
+            <option value="hivern">Més calent per a l’hivern</option>
+          </select>
+        </div>
+
+        <h3>Restriccions</h3>
+        <div id="restriccions" class="chips"></div>
+
+        <h3>Tria els aliments disponibles</h3>
+        <div class="actions">
+          <button class="secondary" onclick="seleccionarTots()">Selecciona-ho tot</button>
+          <button class="secondary" onclick="reiniciarAliments()">Reinicia</button>
+        </div>
+        <div id="aliments"></div>
+      </aside>
+
+      <section>
+        <div class="tabs no-print">
+          <button class="tab active" onclick="showSection('diari', this)">Menú diari</button>
+          <button class="tab" onclick="showSection('setmanal', this)">Menú setmanal</button>
+          <button class="tab" onclick="showSection('revisio', this)">Revisió</button>
+          <button class="tab" onclick="showSection('receptes', this)">Receptes</button>
+          <button class="tab" onclick="showSection('afegir', this)">Afegir recepta</button>
+        </div>
+
+        <div id="diari" class="section active card">
+          <h2>Menú diari</h2>
+          <p class="small">Genera una proposta per a dinar i sopar segons els aliments seleccionats.</p>
+          <div class="actions">
+            <button onclick="generarMenuDiari()">Genera menú diari</button>
+            <button class="secondary" onclick="copiarMenuText('diari')">Copia menú diari</button>
+          </div>
+          <div id="dailyOutput" class="daily-output"></div>
+        </div>
+
+        <div id="setmanal" class="section card">
+          <h2 data-print="Menú setmanal">Menú setmanal</h2>
+          <p class="small no-print">Les caselles són editables. Pots clicar damunt de qualsevol text i modificar-lo.</p>
+          <div class="actions no-print">
+            <button onclick="generarMenuSetmanal()">Genera menú setmanal</button>
+            <button class="secondary" onclick="regenerar('dinar')">Regenera només dinars</button>
+            <button class="secondary" onclick="regenerar('sopar')">Regenera només sopars</button>
+            <button class="secondary" onclick="desarMenu()">Desa menú</button>
+            <button class="secondary" onclick="recuperarMenu()">Recupera menú</button>
+            <button class="warn" onclick="copiarMenuText('setmanal')">Copia en text</button>
+            <button class="warn" onclick="imprimirMenu()">Exporta PDF / Imprimeix</button>
+            <button class="danger" onclick="netejarMenu()">Neteja</button>
+          </div>
+          <div id="weeklyOutput"></div>
+        </div>
+
+        <div id="revisio" class="section card">
+          <h2>Revisió del menú</h2>
+          <div id="reviewOutput">
+            <p class="small">Genera primer un menú setmanal per veure la revisió.</p>
+          </div>
+        </div>
+
+        <div id="receptes" class="section card">
+          <h2>Banc de receptes</h2>
+          <p class="small">No inclou carbassa ni espinacs. Les croquetes estan marcades com a ocasionals.</p>
+          <div class="field">
+            <label for="cercaRecepta">Cerca receptes</label>
+            <input id="cercaRecepta" type="text" placeholder="Ex: cigrons, crema, salmó..." oninput="renderReceptes()" />
+          </div>
+          <div id="recipeList" class="recipe-list"></div>
+        </div>
+
+        <div id="afegir" class="section card">
+          <h2>Afegeix recepta pròpia</h2>
+          <form id="recipeForm" onsubmit="afegirReceptaPropia(event)">
+            <div class="field">
+              <label>Nom</label>
+              <input id="rNom" required type="text" placeholder="Nom de la recepta" />
+            </div>
+            <div class="field">
+              <label>Tipus</label>
+              <select id="rTipus">
+                <option value="crema">Crema</option>
+                <option value="amanida">Amanida freda</option>
+                <option value="llegums">Llegums</option>
+                <option value="peix">Peix</option>
+                <option value="carn">Carn</option>
+                <option value="entrant">Entrant</option>
+                <option value="postres">Fruita/postres</option>
+                <option value="complement">Complement</option>
+                <option value="ocasional">Ocasional</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Ingredients separats per comes</label>
+              <input id="rIngredients" required type="text" placeholder="cigrons, tomàquet, poma..." />
+            </div>
+            <div class="field">
+              <label>Preparació</label>
+              <textarea id="rPreparacio" required placeholder="Explica la preparació breument"></textarea>
+            </div>
+            <div class="field">
+              <label>Etiquetes separades per comes</label>
+              <input id="rEtiquetes" type="text" placeholder="vegetarià, fred, sense gluten..." />
+            </div>
+            <label class="chip"><input id="rOcasional" type="checkbox" /> Plat ocasional</label>
+            <div class="actions">
+              <button type="submit">Afegeix recepta</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+<script>
+const CATEGORIES = {
+  "Verdures i hortalisses": ["carbassó","patata","ceba","tomàquet","pastanaga","enciam","cogombre","pebrot","mongeta tendra"],
+  "Fruites": ["poma","pera","plàtan","taronja","préssec","maduixes","raïm","meló","síndria"],
+  "Llegums": ["llenties","cigrons","mongetes blanques","pèsols","faves"],
+  "Peix": ["salmó","daurada"],
+  "Carn": ["hamburguesa de pollastre","hamburguesa de vedella"],
+  "Entrants saludables": ["hummus","guacamole","bastonets de pastanaga","bastonets de cogombre","amanida petita de tomàquet","torradetes integrals"],
+  "Fruits secs i llavors": ["pipes","nous","ametlles","avellanes","llavors de sèsam","llavors de carbassa"],
+  "Complements saludables": ["oli d’oliva","iogurt natural","formatge fresc","arròs integral","pasta integral","ou dur","pa integral"],
+  "Opcions ocasionals": ["croquetes de ceps","croquetes de rostit"]
+};
+
+const RESTRICCIONS = [
+  ["senseFruitsSecs","Sense fruits secs"],
+  ["senseLactis","Sense lactis"],
+  ["senseOu","Sense ou"],
+  ["senseGluten","Sense gluten"],
+  ["vegetaria","Vegetarià"],
+  ["senseCarn","Sense carn"],
+  ["sensePeix","Sense peix"]
+];
+
+const DIES = ["Dilluns","Dimarts","Dimecres","Dijous","Divendres","Dissabte","Diumenge"];
+const FRUITES = CATEGORIES["Fruites"];
+
+const receptesBase = [
+  rec("Crema de carbassó, patata i ceba","crema","vegetal",["carbassó","patata","ceba","oli d’oliva"],["dinar","sopar"],["crema","calent","suau","vegetarià","sense gluten","sense lactis"],"Coure les verdures fins que siguin tendres. Triturar i afegir oli d’oliva al final."),
+  rec("Crema de tomàquet, pastanaga i ceba","crema","vegetal",["tomàquet","pastanaga","ceba","patata","oli d’oliva"],["dinar","sopar"],["crema","calent","suau","vegetarià","sense gluten","sense lactis"],"Coure les verdures, triturar-les i servir la crema tèbia o calenta."),
+  rec("Crema de pastanaga i patata","crema","vegetal",["pastanaga","patata","ceba","oli d’oliva"],["dinar","sopar"],["crema","calent","suau","vegetarià","sense gluten","sense lactis"],"Coure la pastanaga, la patata i la ceba. Triturar fins a obtenir una textura suau."),
+  rec("Crema de mongeta tendra i patata","crema","vegetal",["mongeta tendra","patata","ceba","oli d’oliva"],["dinar","sopar"],["crema","calent","suau","vegetarià","sense gluten","sense lactis"],"Bullir la mongeta tendra amb patata i ceba. Triturar i afegir oli d’oliva."),
+
+  rec("Amanida freda de llenties amb poma i tomàquet","amanida","llegums",["llenties","poma","tomàquet","ceba","oli d’oliva"],["dinar","sopar"],["amanida","fred","llegums","fruita","vegetarià","sense gluten","sense lactis"],"Barrejar les llenties amb poma tallada a daus, tomàquet i una mica de ceba suau."),
+  rec("Amanida de cigrons amb pera i cogombre","amanida","llegums",["cigrons","pera","cogombre","tomàquet","oli d’oliva"],["dinar","sopar"],["amanida","fred","llegums","fruita","vegetarià","sense gluten","sense lactis"],"Barrejar els cigrons amb pera, cogombre i tomàquet. Servir fred."),
+  rec("Amanida de mongetes blanques amb tomàquet i poma","amanida","llegums",["mongetes blanques","tomàquet","poma","ceba","oli d’oliva"],["dinar","sopar"],["amanida","fred","llegums","fruita","vegetarià","sense gluten","sense lactis"],"Barrejar les mongetes blanques amb tomàquet, poma i ceba suau."),
+  rec("Amanida de patata, tomàquet i cigrons","amanida","llegums",["patata","tomàquet","cigrons","ceba","oli d’oliva"],["dinar","sopar"],["amanida","fred","llegums","vegetarià","sense gluten","sense lactis"],"Coure la patata, deixar-la refredar i barrejar-la amb tomàquet, cigrons i ceba suau."),
+
+  rec("Salmó al vapor amb patata i mongeta tendra","peix","peix",["salmó","patata","mongeta tendra","oli d’oliva"],["dinar","sopar"],["peix","calent","sense gluten","sense lactis","plat principal"],"Coure el salmó al vapor i acompanyar-lo amb patata i mongeta tendra."),
+  rec("Daurada al vapor amb amanida de tomàquet","peix","peix",["daurada","tomàquet","enciam","cogombre","oli d’oliva"],["dinar","sopar"],["peix","calent","amanida","sense gluten","sense lactis","plat principal"],"Coure la daurada al vapor i servir-la amb amanida senzilla."),
+
+  rec("Hamburguesa de pollastre amb amanida","carn","carn",["hamburguesa de pollastre","enciam","tomàquet","cogombre","oli d’oliva"],["dinar","sopar"],["carn","pollastre","calent","sense lactis","plat principal"],"Cuinar l’hamburguesa a la planxa i servir-la amb amanida fresca."),
+  rec("Hamburguesa de vedella amb crema de carbassó","carn","carn",["hamburguesa de vedella","carbassó","patata","ceba","oli d’oliva"],["dinar","sopar"],["carn","vedella","calent","crema","plat principal"],"Preparar una crema suau de carbassó, patata i ceba i servir-la amb l’hamburguesa."),
+
+  rec("Hummus amb bastonets de pastanaga i cogombre","entrant","llegums",["hummus","cigrons","pastanaga","cogombre","oli d’oliva"],["dinar","sopar"],["entrant","llegums","fred","vegetarià","sense gluten","sense lactis"],"Preparar hummus i servir-lo amb bastonets de pastanaga i cogombre."),
+  rec("Guacamole amb torradetes integrals","entrant","entrant",["guacamole","tomàquet","torradetes integrals","oli d’oliva"],["dinar","sopar"],["entrant","fred","vegetarià","sense lactis"],"Aixafar l’alvocat, barrejar-lo amb tomàquet i servir amb torradetes integrals."),
+  rec("Amanida petita de tomàquet i cogombre","entrant","vegetal",["tomàquet","cogombre","oli d’oliva"],["dinar","sopar"],["entrant","amanida","fred","vegetarià","sense gluten","sense lactis"],"Tallar el tomàquet i el cogombre. Amanir amb oli d’oliva."),
+
+  rec("Croquetes de ceps amb amanida","ocasional","ocasional",["croquetes de ceps","enciam","tomàquet","cogombre"],["dinar","sopar"],["ocasional","croquetes","calent","plat ocasional"],"Servir les croquetes de ceps amb una amanida fresca. Plat ocasional.",true),
+  rec("Croquetes de rostit amb crema de carbassó","ocasional","ocasional",["croquetes de rostit","carbassó","patata","ceba"],["dinar","sopar"],["ocasional","croquetes","carn","calent","plat ocasional"],"Servir les croquetes de rostit amb una crema suau. Plat ocasional.",true)
+];
+
+let menuSetmanal = [];
+let menuDiari = null;
+let receptesPropies = [];
+
+function rec(nom,tipus,categoria,ingredients,apat,etiquetes,preparacio,ocasional=false){
+  return {nom,tipus,categoria,ingredients,apat,etiquetes,preparacio,ocasional};
+}
+
+function totesReceptes(){
+  return [...receptesBase, ...receptesPropies];
+}
+
+function init(){
+  renderRestriccions();
+  renderAliments();
+  carregarReceptesPropies();
+  renderReceptes();
+  recuperarMenu(true);
+  registerSW();
+}
+
+function renderRestriccions(){
+  const el = document.getElementById("restriccions");
+  el.innerHTML = RESTRICCIONS.map(([id,label]) => `<label class="chip"><input type="checkbox" id="${id}" onchange="onRestriccioChange()"> ${label}</label>`).join("");
+}
+
+function renderAliments(){
+  const box = document.getElementById("aliments");
+  box.innerHTML = Object.entries(CATEGORIES).map(([cat,items]) => `
+    <h3>${cat}</h3>
+    <div class="chips">
+      ${items.map(item => `<label class="chip"><input class="food" type="checkbox" value="${item}" checked> ${capitalize(item)}</label>`).join("")}
+    </div>
+  `).join("");
+}
+
+function onRestriccioChange(){
+  if(document.getElementById("senseFruitsSecs").checked){
+    ["pipes","nous","ametlles","avellanes","llavors de sèsam","llavors de carbassa"].forEach(v => setFood(v,false));
+    toast("S’han desmarcat fruits secs i llavors per prudència.");
+  }
+  if(document.getElementById("senseCarn").checked || document.getElementById("vegetaria").checked){
+    ["hamburguesa de pollastre","hamburguesa de vedella","croquetes de rostit"].forEach(v => setFood(v,false));
+  }
+  if(document.getElementById("sensePeix").checked || document.getElementById("vegetaria").checked){
+    ["salmó","daurada"].forEach(v => setFood(v,false));
+  }
+}
+
+function setFood(value, checked){
+  const input = [...document.querySelectorAll(".food")].find(i => i.value === value);
+  if(input) input.checked = checked;
+}
+
+function seleccionarTots(){
+  document.querySelectorAll(".food").forEach(i => i.checked = true);
+  toast("Aliments seleccionats.");
+}
+
+function reiniciarAliments(){
+  document.querySelectorAll(".food").forEach(i => i.checked = true);
+  ["carbassa","espinacs"].forEach(v => setFood(v,false));
+  toast("Selecció reiniciada.");
+}
+
+function getSelectedFoods(){
+  return [...document.querySelectorAll(".food:checked")].map(i => i.value);
+}
+
+function getRestriccions(){
+  const obj = {};
+  RESTRICCIONS.forEach(([id]) => obj[id] = document.getElementById(id).checked);
+  return obj;
+}
+
+function filtrarReceptesPerRestriccions(receptes=totesReceptes()){
+  const r = getRestriccions();
+  return receptes.filter(x => {
+    const txt = [...x.ingredients, ...x.etiquetes, x.nom].join(" ").toLowerCase();
+    if(txt.includes("carbassa") || txt.includes("espinac")) return false;
+    if(r.senseFruitsSecs && /(pipes|nous|ametlles|avellanes|llavors)/.test(txt)) return false;
+    if(r.senseLactis && !x.etiquetes.includes("sense lactis")) return false;
+    if(r.senseOu && txt.includes("ou")) return false;
+    if(r.senseGluten && !x.etiquetes.includes("sense gluten")) return false;
+    if((r.vegetaria || r.senseCarn) && (x.tipus==="carn" || txt.includes("pollastre") || txt.includes("vedella") || txt.includes("rostit"))) return false;
+    if((r.vegetaria || r.sensePeix) && (x.tipus==="peix" || txt.includes("salmó") || txt.includes("daurada"))) return false;
+    return true;
+  });
+}
+
+function filtrarReceptesPerAlimentsDisponibles(receptes){
+  const selected = getSelectedFoods();
+  return receptes.filter(x => {
+    const principals = x.ingredients.filter(i => i !== "oli d’oliva");
+    const coincidencies = principals.filter(i => selected.some(s => i.includes(s) || s.includes(i))).length;
+    return coincidencies >= Math.max(1, Math.ceil(principals.length * 0.45));
+  });
+}
+
+function receptesDisponibles(){
+  let r = filtrarReceptesPerRestriccions();
+  let byFood = filtrarReceptesPerAlimentsDisponibles(r);
+  return byFood.length ? byFood : r;
+}
+
+function rand(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function triarRecepta(candidats, tipusPreferit, usades=[], croquetesUsades=0){
+  let pool = candidats.filter(r => r.apat.includes("dinar") || r.apat.includes("sopar"));
+  if(tipusPreferit) pool = pool.filter(r => r.tipus === tipusPreferit || r.categoria === tipusPreferit);
+  if(croquetesUsades >= 1) pool = pool.filter(r => !r.ocasional);
+  pool = pool.filter(r => !usades.includes(r.nom));
+  if(!pool.length) pool = candidats.filter(r => !r.ocasional || croquetesUsades < 1);
+  return rand(pool.length ? pool : candidats);
+}
+
+function observacio(plat){
+  const edat = document.getElementById("edat").value;
+  const notes = [];
+  if(plat.etiquetes.includes("llegums")) notes.push("bona presència de llegums");
+  if(plat.tipus === "crema") notes.push("textura suau");
+  if(plat.tipus === "peix") notes.push("inclou peix");
+  if(plat.tipus === "carn") notes.push("inclou proteïna senzilla");
+  if(plat.ocasional) notes.push("plat ocasional");
+  if(edat === "3-6") notes.push("revisar textures i mida dels trossos");
+  return capitalize(notes.join(", ") || "menú senzill i equilibrat") + ".";
+}
+
+function generarMenuDiari(){
+  const candidats = receptesDisponibles();
+  const dinar = triarRecepta(candidats, null);
+  const sopar = triarRecepta(candidats, document.getElementById("tipusMenu").value === "hivern" ? "crema" : null, [dinar.nom], dinar.ocasional ? 1 : 0);
+  const fruita1 = fruitaDisponible();
+  const fruita2 = fruitaDisponible([fruita1]);
+  menuDiari = {
+    dinar:{entrant: triarEntrant(candidats), plat:dinar, fruita:fruita1, obs:observacio(dinar)},
+    sopar:{entrant: null, plat:sopar, fruita:fruita2, obs:observacio(sopar)}
+  };
+  renderMenuDiari();
+}
+
+function triarEntrant(candidats){
+  const entrants = candidats.filter(r => r.tipus === "entrant");
+  return entrants.length ? rand(entrants) : null;
+}
+
+function fruitaDisponible(evitar=[]){
+  const selected = getSelectedFoods();
+  const disponibles = FRUITES.filter(f => selected.includes(f) && !evitar.includes(f));
+  return rand(disponibles.length ? disponibles : FRUITES);
+}
+
+function renderMenuDiari(){
+  const out = document.getElementById("dailyOutput");
+  if(!menuDiari){ out.innerHTML = ""; return; }
+  out.innerHTML = ["dinar","sopar"].map(k => {
+    const m = menuDiari[k];
+    return `<div class="recipe">
+      <h3>${k === "dinar" ? "Dinar" : "Sopar"}</h3>
+      ${m.entrant ? `<p><b>Entrant:</b> ${m.entrant.nom}</p>` : ""}
+      <p><b>Plat principal:</b> ${m.plat.nom}</p>
+      <p><b>Fruita/postres:</b> ${capitalize(m.fruita)}</p>
+      <p class="small"><b>Observació:</b> ${m.obs}</p>
+    </div>`;
+  }).join("");
+}
+
+function generarMenuSetmanal(){
+  const candidats = receptesDisponibles();
+  const tipusMenu = document.getElementById("tipusMenu").value;
+  const patrons = tipusMenu === "llegums"
+    ? ["llegums","crema","peix","llegums","carn","amanida","llegums"]
+    : tipusMenu === "vegetal"
+    ? ["llegums","crema","amanida","llegums","crema","amanida","llegums"]
+    : tipusMenu === "hivern"
+    ? ["crema","llegums","peix","crema","carn","ocasional","crema"]
+    : tipusMenu === "estiu"
+    ? ["amanida","peix","llegums","amanida","carn","entrant","llegums"]
+    : ["llegums","peix","entrant","llegums","peix","ocasional","carn"];
+
+  let usades = [], croquetes = 0;
+  menuSetmanal = DIES.map((dia,i) => {
+    const dinar = triarRecepta(candidats, patrons[i], usades, croquetes);
+    usades.push(dinar.nom);
+    if(dinar.ocasional) croquetes++;
+    const preferSopar = i%2===0 ? "crema" : "amanida";
+    const sopar = triarRecepta(candidats, preferSopar, [dinar.nom, ...usades.slice(-2)], croquetes);
+    usades.push(sopar.nom);
+    if(sopar.ocasional) croquetes++;
+    return {
+      dia,
+      dinar,
+      sopar,
+      fruita: fruitaDisponible(),
+      observacions: `${observacio(dinar)} ${observacio(sopar)}`
+    };
+  });
+  evitarRepeticions();
+  renderMenuSetmanal();
+  mostrarRevisioMenu();
+  showSection("setmanal", document.querySelector(".tab:nth-child(2)"));
+}
+
+function evitarRepeticions(){
+  for(let i=1;i<menuSetmanal.length;i++){
+    if(menuSetmanal[i].dinar.nom === menuSetmanal[i-1].dinar.nom){
+      const alt = triarRecepta(receptesDisponibles(), null, [menuSetmanal[i].dinar.nom], comptarOcasional());
+      menuSetmanal[i].dinar = alt;
+    }
+    if(menuSetmanal[i].sopar.nom === menuSetmanal[i-1].sopar.nom){
+      const alt = triarRecepta(receptesDisponibles(), null, [menuSetmanal[i].sopar.nom], comptarOcasional());
+      menuSetmanal[i].sopar = alt;
+    }
+  }
+  limitarCroquetes();
+}
+
+function limitarCroquetes(){
+  let count = 0;
+  const candidats = receptesDisponibles().filter(r => !r.ocasional);
+  menuSetmanal.forEach(d => {
+    ["dinar","sopar"].forEach(k => {
+      if(d[k].ocasional){
+        count++;
+        if(count > 1) d[k] = triarRecepta(candidats, "crema", []);
+      }
+    });
+  });
+}
+
+function comptarOcasional(){
+  return menuSetmanal.flatMap(d => [d.dinar,d.sopar]).filter(r => r && r.ocasional).length;
+}
+
+function renderMenuSetmanal(){
+  const out = document.getElementById("weeklyOutput");
+  if(!menuSetmanal.length){
+    out.innerHTML = `<p class="small">Encara no has generat cap menú setmanal.</p>`;
+    return;
+  }
+  out.innerHTML = `<table>
+    <thead><tr><th>Dia</th><th>Dinar</th><th>Sopar</th><th>Fruita/Postres</th><th>Observacions</th></tr></thead>
+    <tbody>
+    ${menuSetmanal.map((d,i) => `
+      <tr>
+        <td data-label="Dia">${d.dia}</td>
+        <td data-label="Dinar"><div class="editable" contenteditable="true" oninput="syncEdit(${i},'dinarText',this.innerText)">${d.dinar.nom}</div><div class="meal-meta">${d.dinar.ingredients.join(", ")}</div></td>
+        <td data-label="Sopar"><div class="editable" contenteditable="true" oninput="syncEdit(${i},'soparText',this.innerText)">${d.sopar.nom}</div><div class="meal-meta">${d.sopar.ingredients.join(", ")}</div></td>
+        <td data-label="Fruita/Postres"><div class="editable" contenteditable="true" oninput="syncEdit(${i},'fruita',this.innerText)">${capitalize(d.fruita)}</div></td>
+        <td data-label="Observacions"><div class="editable" contenteditable="true" oninput="syncEdit(${i},'observacions',this.innerText)">${d.observacions}</div></td>
+      </tr>
+    `).join("")}
+    </tbody>
+  </table>`;
+}
+
+function syncEdit(i,key,value){
+  menuSetmanal[i][key] = value;
+  mostrarRevisioMenu();
+}
+
+function regenerar(part){
+  if(!menuSetmanal.length) return generarMenuSetmanal();
+  const candidats = receptesDisponibles();
+  menuSetmanal = menuSetmanal.map((d,i) => {
+    const nou = triarRecepta(candidats, part === "dinar" ? (i%2 ? "llegums":"amanida") : (i%2 ? "crema":"amanida"), [], comptarOcasional());
+    return {...d, [part]: nou, observacions: `${part === "dinar" ? observacio(nou) : observacio(d.dinar)} ${part === "sopar" ? observacio(nou) : observacio(d.sopar)}`};
+  });
+  limitarCroquetes();
+  renderMenuSetmanal();
+  mostrarRevisioMenu();
+}
+
+function calcularEquilibriSetmanal(){
+  if(!menuSetmanal.length) return null;
+  const plats = menuSetmanal.flatMap(d => [d.dinar,d.sopar]).filter(Boolean);
+  const text = plats.map(p => [p.nom,...p.ingredients,...p.etiquetes].join(" ").toLowerCase()).join(" ");
+  const diesFruita = menuSetmanal.filter(d => d.fruita).length;
+  const llegums = (text.match(/llenties|cigrons|mongetes|pèsols|faves|hummus/g)||[]).length;
+  const peix = (text.match(/salmó|daurada|peix/g)||[]).length;
+  const carn = (text.match(/pollastre|vedella|carn/g)||[]).length;
+  const cremes = plats.filter(p => p.tipus === "crema").length;
+  const amanides = plats.filter(p => p.tipus === "amanida").length;
+  const croquetes = plats.filter(p => p.ocasional || p.nom.toLowerCase().includes("croquetes")).length;
+  const ingredients = plats.flatMap(p => p.ingredients);
+  const unics = new Set(ingredients).size;
+  const varietat = unics / Math.max(1, ingredients.length);
+  const r = getRestriccions();
+
+  let score = 40;
+  if(diesFruita >= 7) score += 12;
+  if(llegums >= 4) score += 12; else if(llegums >= 2) score += 7;
+  if(r.sensePeix || r.vegetaria) score += 8; else if(peix >= 2 && peix <= 5) score += 10; else if(peix >= 1) score += 5;
+  if(r.senseCarn || r.vegetaria) score += 8; else if(carn >= 1 && carn <= 4) score += 8; else if(carn > 4) score -= 6;
+  if(croquetes <= 1) score += 8; else score -= 15;
+  if(cremes >= 2 && amanides >= 2) score += 8;
+  if(varietat > .45) score += 10; else score += 4;
+
+  score = Math.max(0, Math.min(100, Math.round(score)));
+
+  const missatges = [];
+  missatges.push(score >= 85 ? "Menú molt equilibrat." : score >= 70 ? "Menú força equilibrat." : score >= 50 ? "Menú millorable." : "Cal revisar el menú.");
+  if(diesFruita >= 7) missatges.push("Aquest menú té bona presència de fruita.");
+  if(llegums < 3) missatges.push("Falten més llegums aquesta setmana.");
+  if(!r.sensePeix && !r.vegetaria && peix < 1) missatges.push("Hi ha poca presència de peix.");
+  if(!r.senseCarn && !r.vegetaria && carn > 4) missatges.push("Hi ha massa repetició de carn.");
+  if(croquetes <= 1) missatges.push("Les croquetes apareixen com a plat ocasional, correcte.");
+  if(cremes >= 2 && amanides >= 2) missatges.push("Bon equilibri entre cremes i amanides.");
+  missatges.push("Revisa possibles al·lèrgies abans d’oferir fruits secs o llavors a menors.");
+
+  return {score,diesFruita,llegums,peix,carn,croquetes,cremes,amanides,varietat,missatges};
+}
+
+function mostrarRevisioMenu(){
+  const data = calcularEquilibriSetmanal();
+  const out = document.getElementById("reviewOutput");
+  if(!data){
+    out.innerHTML = `<p class="small">Genera primer un menú setmanal per veure la revisió.</p>`;
+    return;
+  }
+  const badge = (label, ok) => `<span class="badge ${ok?'':'warn'}">${label}</span>`;
+  out.innerHTML = `
+    <div class="score-box">
+      <div class="score" style="--score:${data.score}"><span>${data.score}</span></div>
+      <div>
+        <h3>${data.missatges[0]}</h3>
+        <div class="badges">
+          ${badge("Fruita: " + (data.diesFruita>=7 ? "correcte":"millorable"), data.diesFruita>=7)}
+          ${badge("Llegums: " + (data.llegums>=3 ? "correcte":"millorable"), data.llegums>=3)}
+          ${badge("Peix: " + (data.peix>=1 ? "correcte":"millorable/no aplicable"), data.peix>=1 || getRestriccions().sensePeix || getRestriccions().vegetaria)}
+          ${badge("Carn: " + (data.carn<=4 ? "correcte":"massa freqüent"), data.carn<=4)}
+          ${badge("Croquetes: " + (data.croquetes<=1 ? "correcte":"massa freqüents"), data.croquetes<=1)}
+          ${badge("Varietat: " + (data.varietat>.45 ? "correcta":"millorable"), data.varietat>.45)}
+        </div>
+        <ul>${data.missatges.slice(1).map(m => `<li>${m}</li>`).join("")}</ul>
+      </div>
+    </div>`;
+}
+
+function renderReceptes(){
+  const q = (document.getElementById("cercaRecepta")?.value || "").toLowerCase();
+  const list = totesReceptes().filter(r => !q || [r.nom,...r.ingredients,...r.etiquetes].join(" ").toLowerCase().includes(q));
+  document.getElementById("recipeList").innerHTML = list.map(r => `
+    <article class="recipe">
+      <b>${r.nom}</b>
+      <p class="small">${r.preparacio}</p>
+      <p><strong>Ingredients:</strong> ${r.ingredients.join(", ")}</p>
+      <div class="tags">${r.etiquetes.map(t => `<span class="tag">${t}</span>`).join("")}${r.ocasional?'<span class="tag">màx. 1/setmana</span>':''}</div>
+    </article>
+  `).join("");
+}
+
+function afegirReceptaPropia(e){
+  e.preventDefault();
+  const nova = {
+    nom: document.getElementById("rNom").value.trim(),
+    tipus: document.getElementById("rTipus").value,
+    categoria: document.getElementById("rTipus").value,
+    ingredients: document.getElementById("rIngredients").value.split(",").map(x=>x.trim().toLowerCase()).filter(Boolean),
+    apat:["dinar","sopar"],
+    etiquetes: document.getElementById("rEtiquetes").value.split(",").map(x=>x.trim().toLowerCase()).filter(Boolean),
+    preparacio: document.getElementById("rPreparacio").value.trim(),
+    ocasional: document.getElementById("rOcasional").checked
+  };
+  const txt = [nova.nom,...nova.ingredients].join(" ").toLowerCase();
+  if(txt.includes("carbassa") || txt.includes("espinac")){
+    toast("No es pot afegir: carbassa i espinacs estan exclosos.");
+    return;
+  }
+  receptesPropies.push(nova);
+  guardarReceptesPropies();
+  e.target.reset();
+  renderReceptes();
+  toast("Recepta afegida.");
+}
+
+function guardarReceptesPropies(){
+  localStorage.setItem("menuVerdReceptes", JSON.stringify(receptesPropies));
+}
+
+function carregarReceptesPropies(){
+  try{ receptesPropies = JSON.parse(localStorage.getItem("menuVerdReceptes") || "[]"); }
+  catch{ receptesPropies = []; }
+}
+
+function desarMenu(){
+  localStorage.setItem("menuVerdSetmanal", JSON.stringify(menuSetmanal));
+  toast("Menú desat.");
+}
+
+function recuperarMenu(silent=false){
+  try{
+    const saved = JSON.parse(localStorage.getItem("menuVerdSetmanal") || "[]");
+    if(saved.length){
+      menuSetmanal = saved;
+      renderMenuSetmanal();
+      mostrarRevisioMenu();
+      if(!silent) toast("Menú recuperat.");
+    } else if(!silent) toast("No hi ha cap menú desat.");
+  }catch{
+    if(!silent) toast("No s’ha pogut recuperar el menú.");
+  }
+}
+
+function netejarMenu(){
+  menuSetmanal = [];
+  menuDiari = null;
+  renderMenuSetmanal();
+  renderMenuDiari();
+  mostrarRevisioMenu();
+  toast("Menú netejat.");
+}
+
+function copiarMenuText(mode){
+  let text = "";
+  if(mode === "diari" && menuDiari){
+    text = `MENÚ DIARI\n\nDINAR\n${menuDiari.dinar.entrant ? "Entrant: " + menuDiari.dinar.entrant.nom + "\n" : ""}Plat: ${menuDiari.dinar.plat.nom}\nFruita: ${menuDiari.dinar.fruita}\nObservació: ${menuDiari.dinar.obs}\n\nSOPAR\nPlat: ${menuDiari.sopar.plat.nom}\nFruita: ${menuDiari.sopar.fruita}\nObservació: ${menuDiari.sopar.obs}`;
+  } else {
+    if(!menuSetmanal.length) return toast("Genera primer un menú setmanal.");
+    text = "MENÚ SETMANAL\n\n" + menuSetmanal.map(d => `${d.dia}\nDinar: ${d.dinarText || d.dinar.nom}\nSopar: ${d.soparText || d.sopar.nom}\nFruita/Postres: ${d.fruita}\nObservacions: ${d.observacions}`).join("\n\n");
+  }
+  navigator.clipboard.writeText(text).then(()=>toast("Menú copiat."),()=>toast("No s’ha pogut copiar."));
+}
+
+function imprimirMenu(){
+  window.print();
+}
+
+function showSection(id, btn){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+}
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2200);
+}
+
+function capitalize(s){
+  return (s||"").charAt(0).toUpperCase() + (s||"").slice(1);
+}
+
+function registerSW(){
+  if(!("serviceWorker" in navigator)) return;
+  const sw = `
+    const CACHE = "menu-verd-v1";
+    self.addEventListener("install", e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(["./"])));
+      self.skipWaiting();
+    });
+    self.addEventListener("fetch", e => {
+      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+    });
+  `;
+  const blob = new Blob([sw], {type:"text/javascript"});
+  const url = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url).catch(()=>{});
+}
+
+init();
+</script>
+</body>
+</html>
