@@ -1,37 +1,40 @@
-# Menú Verd · PWA
+# Menú Verd · PWA v3
 
 PWA per generar menús saludables diaris i setmanals per a menors.
 
+## Canvis inclosos
+
+- Peix i croquetes només poden sortir als sopars.
+- S'ha afegit gaspatxo als dinars.
+- El tomàquet surt en amanides o gaspatxo, no en cremes de verdures.
+- S'han afegit pasta de colors i arròs blanc.
+- S'han tret llavors de sèsam, pasta integral i pa integral.
+- S'ha afegit carn: bistec.
+- S'han afegit cireres, albercocs i mango a fruites.
+- S'han afegit desplegables per seleccionar receptes de dinars, sopars i entrants.
+
+## Fitxers
+
+- `index.html`
+- `manifest.webmanifest`
+- `sw.js`
+- `icons/icon-192.png`
+- `icons/icon-512.png`
+
 ## Publicació a GitHub Pages
 
-1. Puja aquests fitxers a un repositori:
-   - `index.html`
-   - `manifest.webmanifest`
-   - `sw.js`
-   - carpeta `icons/`
+Puja tots els fitxers a l'arrel del repositori i activa:
 
-2. Ves a `Settings > Pages`.
-
-3. Selecciona:
-   - `Deploy from a branch`
-   - branca `main`
-   - carpeta `/root`
-
-4. Obre la URL publicada amb HTTPS.
+`Settings > Pages > Deploy from a branch > main / root`
 
 ## Instal·lació al mòbil
 
-### iPhone / Safari
-A iPhone normalment no apareix un botó "Instal·lar".
-Cal obrir la web amb Safari i fer:
+### iPhone
+Obre la web publicada amb Safari i fes:
 
 `Compartir > Afegir a la pantalla d'inici`
 
-Això és la instal·lació PWA a iOS.
+### Android
+Obre la web amb Chrome. Pot aparèixer:
 
-### Android / Chrome
-A Android pot aparèixer:
-- `Instal·la l'aplicació`
-- o `Afegeix a la pantalla d'inici`
-
-Si només surt "accés directe", comprova que la web està publicada amb HTTPS i que no s'obre com a fitxer local.
+`Instal·la l'aplicació` o `Afegeix a la pantalla d'inici`.
